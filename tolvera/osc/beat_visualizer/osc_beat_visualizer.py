@@ -1,6 +1,12 @@
 import taichi as ti
 from tolvera import Tolvera, run
 
+'''
+Instructions to run:
+1. Run the osc_beat_visualizer.py file first
+2. In a separate terminal, run the osc_sender. 
+3. You should now be able to hear audio and see the beat visualizer reacting to the osc messages. Enjoy!
+'''
 
 
 def main(**kwargs):
@@ -12,16 +18,6 @@ def main(**kwargs):
     last_beat_frame = ti.field(dtype=ti.i32, shape=())
     frame_counter = ti.field(dtype=ti.i32, shape=())
     beat_started[None] = 0
-
-    @ti.kernel
-    def reset_particles():
-        for i in range(tv.p.n):
-            tv.p[i].pos.x = tv.x / 2
-            tv.p[i].pos.y = tv.y / 2
-            tv.p[i].vel.x = 0
-            tv.p[i].vel.y = 0
-
-    # reset_particles()
 
 
     # Capture beat signal from OSC
@@ -38,11 +34,10 @@ def main(**kwargs):
     def _():
         tv.px.diffuse(0.99)
         tv.v.move(tv.p, 10.0)
-        # print(beat_started[None])
         frame_counter[None] += 1
 
     # Reset beat state if no beat detected recently
-        if frame_counter[None] - last_beat_frame[None] > 120:  # e.g., 60 frames = 1 second
+        if frame_counter[None] - last_beat_frame[None] > 120:
             beat_started[None] = 0
         if(beat_started[None]==0):
             tv.v.attract(tv.p, [tv.x/2, tv.y/2], 500000000.0, tv.x)  
@@ -50,14 +45,9 @@ def main(**kwargs):
 
             # Decide behavior based on beat count (even = repel, odd = attract)
             if beat_counter[None] % 2 == 0:
-                # print("repel")
                 tv.v.repel(tv.p, [tv.x/2, tv.y/2], 500000000.0, tv.x)
-                # tv.v.flock(tv.p)
-                # tv.v.attract(tv.p, [tv.x/2, tv.y/2], 500000000.0, tv.x)
 
             else:
-                # print("attract")
-                # tv.v.swarm(tv.p)
                 tv.v.attract(tv.p, [tv.x/2, tv.y/2], 500000000.0, tv.x)
 
         tv.px.particles(tv.p, tv.s.species())
