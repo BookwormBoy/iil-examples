@@ -3,9 +3,13 @@ from tolvera import Tolvera, run
 
 '''
 Instructions to run:
-1. Run the osc_beat_visualizer.py file first
-2. In a separate terminal, run the osc_sender. 
-3. You should now be able to hear audio and see the beat visualizer reacting to the osc messages. Enjoy!
+1. Certain python libraries must be installed for the osc_sender to run. You can install them with:
+
+    pip install numpy aubio soundfile sounddevice python-osc
+
+2. Run the osc_beat_visualizer.py file first
+3. In a separate terminal, run the osc_sender. 
+4. You should now be able to hear audio and see the beat visualizer reacting to the osc messages. Enjoy!
 '''
 
 
